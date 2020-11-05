@@ -1,10 +1,10 @@
 from .solver import Solver
 
 from .variable import Variable
-from .variable_timeDate import DateTimeVariable
+from .rangeVariable import RangeVariable
 
 from .constraint import Constraint
-from .DateTimeConstraint import DateTimeConstraint
+from .RangeConstraint import RangeConstraint
 
 from .dateTime import DateTime
 
