@@ -18,7 +18,7 @@ class RangeConstraint(Constraint):
     def pruneDomain(self,domain=[]):
         modifed = False
         for x in domain:
-            if self.endDateTime <=x[0] or self.startDateTime >= x[1]:
+            if self.endDateTime <x[0] or self.startDateTime > x[1]:
                 domain.remove(x)
                 modified = True
                 print("RangeConstraint.py > pruneDomain()> Removed",x)          

@@ -20,7 +20,8 @@ print(lmcs.Variable.count)
 
 # Add all constraints
 solver.addConstraint(lmcs.RangeConstraint(datetime.datetime(2020,1,4,8),datetime.datetime(2020,1,4,9),"date",lmcs.RangeConstraint.Op.WITHIN))  # Says event date/time must be in this range
-solver.addConstraint(lmcs.RangeConstraint(datetime.datetime(2020,1,5,1),datetime.datetime(2020,1,12,23),"date",lmcs.RangeConstraint.Op.WITHIN))
+#solver.addConstraint(lmcs.RangeConstraint(datetime.datetime(2020,1,5,1),datetime.datetime(2020,1,12,23),"date",lmcs.RangeConstraint.Op.WITHIN))
+#solver.addConstraint(lmcs.RangeConstraint(datetime.datetime(2010,1,4,8),datetime.datetime(2019,1,4,9),"date",lmcs.RangeConstraint.Op.WITHIN))  # Says event date/time must be in this range
 
 
 print(lmcs.Constraint.count)

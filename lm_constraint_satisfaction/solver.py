@@ -38,6 +38,9 @@ class Solver:
                     # If domain has been modified add it's dependand constraints to agenda
                     if modifeid:
                         pass
+
+                    if len(var.domain)==0:
+                        print("Err: No solution exists")
         print("Made Arc Consistent")
 
 
