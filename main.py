@@ -7,8 +7,8 @@ import datetime
 # Setup data for new event
 dateVariable = lmcs.Variable([1,2,3,4,5])
 participantsVariable = lmcs.Variable([])
-eventConstraintSet = lmcs.ConditionSet([dateVariable,participantsVariable])
-event = lmcs.Event(eventConstraintSet)
+eventConditionSet = lmcs.ConditionSet([dateVariable,participantsVariable])
+event = lmcs.Event(eventConditionSet)
 
 # It's also posible to create an event in short-form
 event2 = lmcs.Event(lmcs.ConditionSet([lmcs.Variable(["1,2,3"]),lmcs.Variable(["Geoff,Bob"])]))
@@ -16,8 +16,8 @@ event2 = lmcs.Event(lmcs.ConditionSet([lmcs.Variable(["1,2,3"]),lmcs.Variable(["
 # Enter a participants data
 participantDateVariable = lmcs.Variable([2,3])
 participantDateConstraint = lmcs.Constraint((dateVariable.uuid,participantDateVariable.uuid),"=") # Create constraint referecing variables UUIDs
-OptimalConstraint = lmcs.Constraint((event.event.constraints[0],event.users[0].variables[0]),"=") # Create constraint using variables indexes (More performant, use whenever possible)
-conditionset = lmcs.ConditionSet([participantDateVariable],[participantDateConstraint,OptimalConstraint])
+optimalConstraint = lmcs.Constraint((event.event.constraints[0],event.users[0].variables[0]),"=") # Create constraint using variables indexes (More performant, use whenever possible)
+conditionset = lmcs.ConditionSet([participantDateVariable],[participantDateConstraint,optimalConstraint])
 event.addUserConditionSet(conditionset)
 
 
