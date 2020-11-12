@@ -1,31 +1,29 @@
+from lm_constraint_satisfaction.constraint import Constraint
 import lm_constraint_satisfaction as lmcs
 import datetime
 
-x = datetime.datetime.now()
-y = datetime.datetime(2005,7,4)
-tst = datetime.datetime(2000,8,2)
-if y <= tst <= x:
-    print("ayy")
 
 
+# Setup data for new event
+dateVariable = lmcs.Variable([1,2,3,4,5])
+participantsVariable = lmcs.Variable([])
+eventConstraintSet = lmcs.ConditionSet([dateVariable,participantsVariable])
+event = lmcs.Event(eventConstraintSet)
+
+# It's also posible to create an event in short-form
+event2 = lmcs.Event(lmcs.ConditionSet([lmcs.Variable(["1,2,3"]),lmcs.Variable(["Geoff,Bob"])]))
+
+# Enter a participants data
+participantDateVariable = lmcs.Variable([2,3])
+participantDateConstraint = lmcs.Constraint((dateVariable.uuid,participantDateVariable.uuid),"=") # Create constraint referecing variables UUIDs
+OptimalConstraint = lmcs.Constraint((event.event.constraints[0],event.users[0].variables[0]),"=") # Create constraint using variables indexes (More performant, use whenever possible)
+conditionset = lmcs.ConditionSet([participantDateVariable],[participantDateConstraint,OptimalConstraint])
+event.addUserConditionSet(conditionset)
 
 
-date = lmcs.RangeVariable(datetime.datetime(2020,1,4,5),datetime.datetime(2020,1,4,12),"date")
-date.addDomain(datetime.datetime(2020,1,6,5),datetime.datetime(2020,1,7,18))
+event.printFull()
 
-solver = lmcs.Solver()
-solver.addVariable(date)
-
-print(lmcs.Variable.count)
-
-# Add all constraints
-solver.addConstraint(lmcs.RangeConstraint(datetime.datetime(2020,1,4,8),datetime.datetime(2020,1,4,9),"date",lmcs.RangeConstraint.Op.WITHIN))  # Says event date/time must be in this range
-#solver.addConstraint(lmcs.RangeConstraint(datetime.datetime(2020,1,5,1),datetime.datetime(2020,1,12,23),"date",lmcs.RangeConstraint.Op.WITHIN))
-#solver.addConstraint(lmcs.RangeConstraint(datetime.datetime(2010,1,4,8),datetime.datetime(2019,1,4,9),"date",lmcs.RangeConstraint.Op.WITHIN))  # Says event date/time must be in this range
-
-
-print(lmcs.Constraint.count)
-
-
-# Solve
-solver.solve()
+# Index positions related to UUID are stored in dictionary
+print("\n")
+print(event.usersDict)
+print(event.users[event.usersDict[conditionset.uuid]])

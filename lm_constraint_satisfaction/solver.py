@@ -17,6 +17,10 @@ class Solver:
         self._makeArcConsistent()
 
     def _makeArcConsistent(self):
+
+        # Find all constraints and add their arcs to agenda
+        
+
         agenda = []
 
         for constraint in self.constraints:
