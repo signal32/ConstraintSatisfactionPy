@@ -10,6 +10,9 @@ class Variable:
         Variable.count += 1
         return
 
+    def __repr__(self) -> str:
+        return "Variable: %s [%s] Domain: %s" % (self.name, self.uuid, self.domain)
+
     def __str__(self):
         return "Variable: %s [%s]\n\tDomain: %s" % (self.name, self.uuid, self.domain)
 

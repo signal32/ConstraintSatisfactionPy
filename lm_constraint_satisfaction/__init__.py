@@ -4,7 +4,8 @@ from. Event import Event
 
 from .ConditionSet import ConditionSet
 from .variable import Variable
+from .UnaryVariable import UnaryVariable
 from .constraint import Constraint
 
 
-import types as Types1
+from lm_constraint_satisfaction import types

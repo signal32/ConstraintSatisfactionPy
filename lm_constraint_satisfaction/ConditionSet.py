@@ -1,15 +1,18 @@
 import uuid
+from typing import List
 from .variable import Variable
 from .constraint import Constraint
 
 class ConditionSet():
     count = 0
 
-    def __init__(self,variables = [Variable()] ,constraints = [Constraint(2,2)]):
+    #TODO input variable&constraint parameters caused crippling duplication bug. 
+    #They are not neccesary and now removed. Why did bug occur?
+    def __init__(self):
         self.uuid = uuid.uuid1()
         self.name = "ConditionSet" + str(ConditionSet.count)
-        self.variables = variables
-        self.constraints = constraints
+        self.variables = []
+        self.constraints = []
         self.variablesDict = {}
         self.constraintsDict = {}
         ConditionSet.count += 1
@@ -37,10 +40,10 @@ class ConditionSet():
         '''Adds a variable set and returns its index'''
         if isinstance(variable, Variable):
             self.variables.append(variable)
-        return len (self.constraints) - 1
+        return len (self.constraints) 
     
     def addConstraint(self, constraint):
         '''Adds a constraint set and returns its index'''
         if isinstance(constraint, Constraint):
             self.constraints.append(constraint)
-        return len(self.constraints) - 1
+        return len(self.constraints)

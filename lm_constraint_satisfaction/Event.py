@@ -1,11 +1,12 @@
 import uuid
+from typing import List
 from .ConditionSet import ConditionSet
 
 class Event():
 
     count = 0
 
-    def __init__(self,eventConditionSet = ConditionSet(), userConditionSets = [ConditionSet()] , name = "Event " + str(count)):
+    def __init__(self,eventConditionSet: List[ConditionSet] = [], userConditionSets: List[ConditionSet] = [], name = "Event " + str(count)):
         self.name = name
         self.uuid = uuid.uuid1()
         self.event = eventConditionSet
