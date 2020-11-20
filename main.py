@@ -29,3 +29,6 @@ range2 = lmcs.types.DateRange(datetime.datetime(1999,1,5,5),datetime.datetime(19
 print(range1, "\n", range2)
 print (range1 == range2)
 
+solver = lmcs.solver.Solver(event)
+
+solver.solve()

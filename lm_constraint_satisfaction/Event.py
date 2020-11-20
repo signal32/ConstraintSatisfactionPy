@@ -6,10 +6,11 @@ class Event():
 
     count = 0
 
-    def __init__(self,eventConditionSet: List[ConditionSet] = [], userConditionSets: List[ConditionSet] = [], name = "Event " + str(count)):
+    def __init__(self,eventConditionSet: ConditionSet = None, userConditionSets: List[ConditionSet] = [], name = "Event " + str(count)):
         self.name = name
         self.uuid = uuid.uuid1()
         self.event = eventConditionSet
+        self.eventMain = 0
         self.users = userConditionSets
         self.usersDict = {}
         self.lut = False
@@ -23,6 +24,9 @@ class Event():
 
     def __str__(self):
         return "Event: %s [%s]\n\tUser count: %s" % (self.name, self.uuid, len(self.users))
+
+    def __repr__(self) -> str:
+        return "Event: %s [%s] User count: %s" % (self.name, self.uuid, len(self.users))
 
     def printFull(self):
         print(self)
