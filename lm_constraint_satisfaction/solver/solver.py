@@ -41,7 +41,10 @@ class Solver():
                 elif isinstance(var, Variable):
                     variables.append([var.uuid,var.domain[0]])
 
-        # Find variable and then
+        #TODO For each value of "date" variable test the constraints against domains & rate that date /100
+        #TODO date variables should be set as events "main" variable
+
+
 
 
         print(variables)
