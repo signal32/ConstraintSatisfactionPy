@@ -20,32 +20,32 @@ class Solver():
         variables = []
 
         # Get event constraints
-        for const in self.event.event.constraints:
-            constraints.append(const)
-        
-        # Get reference and assign value to event variables
-        for var in self.event.event.variables:
-            if isinstance(var, UnaryVariable):
-                variables.append([var.uuid,var.domain])
-            elif isinstance(var, Variable):
-                variables.append([var.uuid,var.domain[0]])
-
-        # Get user constraints
-        for constraintSet in self.event.users:
-            for const in constraintSet.constraints:
-                constraints.append(const)
+        for x in self.event.event.constraints:
+            #constraints.append(const)
+            constraints.append(self.event.event.constraints[x])
             
-            for var in constraintSet.variables:
-                if isinstance(var, UnaryVariable):
-                    variables.append([var.uuid,var.domain])
-                elif isinstance(var, Variable):
-                    variables.append([var.uuid,var.domain[0]])
+        # Get reference to event variables
+        for var in self.event.event.variables:
+            variables.append(var)
 
-        #TODO For each value of "date" variable test the constraints against domains & rate that date /100
-        #TODO date variables should be set as events "main" variable
+        # Get all user constraints & variables
+        for x in self.event.users:
+            for const in (self.event.users[x].constraints):
+                constraints.append(self.event.users[x].constraints[const])
+            
+            for var in (self.event.users[x].variables):
+                variables.append(var)
+
+        print("Solver Variable References: ",variables)
+        print("Solver Constraints: ", constraints)
+
+        #TODO   1. Choose a value from each variables domain
+        #TODO   2. Test if this selection of values satisfies the constraints. 
+        #       If all constraints are satisfied rank = 100, else rank is dependant on number of constraints satisfied and their priority level
+        #TODO   3. Repeat steps 1 & 2 until all permutations have been tested
+
+        #TODO Optimise this solver by only checking permutations that are centered around the date variable
+        #TODO Optimise this solver by checking for arc consistency first (AC-3) and removing non consistent values from domain
 
 
-
-
-        print(variables)
-        #print(constraints)
+        return

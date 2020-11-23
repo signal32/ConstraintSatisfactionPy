@@ -16,6 +16,8 @@ class Constraint:
     def __str__(self):
         return "Constraint: %s [%s]\n\tscope: %s\n\trelation: %s\n\ttestTrue: %s\n\tpriority: %s" % (self.name, self.uuid, self.scope,self.relation,self.testTrue,self.priority)
 
+    def __repr__(self) -> str:
+        return "Constraint: %s, scope: %s" % (self.name, self.scope)
     def printFull(self):
         print(self)
 
