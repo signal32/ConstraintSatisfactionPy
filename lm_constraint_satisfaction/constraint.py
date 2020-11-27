@@ -1,5 +1,6 @@
 import uuid
 
+
 class Constraint:
 
     count = 0
@@ -18,6 +19,7 @@ class Constraint:
 
     def __repr__(self) -> str:
         return "Constraint: %s, scope: %s" % (self.name, self.scope)
+
     def printFull(self):
         print(self)
 
