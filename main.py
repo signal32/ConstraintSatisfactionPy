@@ -1,4 +1,6 @@
 #import lm_Conditions as lmcs
+from LetsMeet.ConditionManager import variable
+from LetsMeet.ConditionManager.ConditionSet import ConditionSet
 from sys import maxsize
 from tkinter.ttk import Treeview
 import LetsMeet as lm
@@ -15,6 +17,7 @@ class Application(tk.Frame):
     def __init__(self, root) -> None:
         self.root = root
         self.UI()
+        self.events = []
 
     # Initilaise UI
     def UI(self):
@@ -24,22 +27,22 @@ class Application(tk.Frame):
         self.root.grid_columnconfigure(4, minsize=1)
 
         #Define UI widgets
+        self.addEventButton = tk.Button(self.root,text="Add Event",command=self.addEvent)
+        self.addEventButton.grid(row=0,column=0,sticky='nsew')
+
         self.setDatesButton = tk.Button(self.root,text="Add event date",command=lambda: EnterDateRange(self.root,self.setDateRange))
-        self.setDatesButton.grid(row=0,column=0,sticky='nsew')
+        self.setDatesButton.grid(row=1,column=0,sticky='nsew')
 
         self.setUsersButton = tk.Button(self.root,text="Add required user")
-        self.setUsersButton.grid(row=0,column=1,sticky='nsew')
+        self.setUsersButton.grid(row=1,column=1,sticky='nsew')
 
-        self.idnumber_label = tk.Label(self.root, text="ID")
+        self.idnumber_label = tk.Label(self.root, text="Name:")
         self.idnumber_entry = tk.Entry(self.root)
-        self.idnumber_label.grid(row=1, column=0, sticky=tk.W)
-        self.idnumber_entry.grid(row=1, column=1)
- 
-        self.submit_button = tk.Button(self.root, text="Insert", command=self.insert_data)
-        self.submit_button.grid(row=1, column=1, sticky=tk.W)
- 
-        self.exit_button = tk.Button(self.root, text="Exit", command=self.root.quit)
-        self.exit_button.grid(row=0, column=3)
+        self.idnumber_label.grid(row=0, column=1, sticky=tk.W)
+        self.idnumber_entry.grid(row=0, column=2,sticky='nsew')
+
+        self.spewButton = tk.Button(self.root, text="Debug Selected", command=self.spew)
+        self.spewButton.grid(row=1,column=4)
 
         # Set treeview
         self.tree = ttk.Treeview(self.root,columns=('Value','Type','ID'))
@@ -68,12 +71,29 @@ class Application(tk.Frame):
     def popupUser(self):
         self.popupUser
 
+    def spew(self):
+        print("______Selected_______")
+        print("ID: ",self.treeview.selection()[0])
+        print("Contents: ",self.treeview.item(self.treeview.focus()))
+        
+
     def insert_data(self):
         self.treeview.insert('', 'end', iid=self.iid, text="Item_" + str(self.id),
                             values=("Name: " + self.name_entry.get(),
                                     self.idnumber_entry.get()))
         self.iid = self.iid + 1
         self.id = self.id + 1
+
+    def addEvent(self):
+        event = lm.EventManager.Manager()
+        event.initBlank()
+        if(len(self.idnumber_entry.get())>1):
+            event.setProperty('name',self.idnumber_entry.get())
+        self.events.append(event.event)
+        root = self.treeInsert(event.event)
+        self.treeInsert("DOMAINHOLDER",root)
+        self.treeInsert("CONSTRAINTHOLDER",root)
+        self.treeInsert("USERHOLDER",root)
 
     def insertDomain(self,event:bool, name, value, id, ):
         if event:
@@ -84,16 +104,33 @@ class Application(tk.Frame):
         self.iid = self.iid + 1
         self.id = self.id + 1
 
-    def openSetDates(self):
-        #setDatesWindow = tk.Toplevel(self.root)
-        setDatesWindow = EnterDateRange(self.root,self.setDateRange)
+    def treeInsert(self,element,parent = None):
+        #current = self.treeview.item(self.treeview.focus())
+        #item = self.treeview.selection()[0]
+        insertID = self.iid
+        if isinstance(element,lm.EventManager.Event):
+            self.treeview.insert('','end',iid=self.iid,text=str(element.name),values=("","Event",str(element.uuid)))
+        elif isinstance(element,variable.Variable):
+            pass
+        elif element == "CONSTRAINTHOLDER":
+            self.treeview.insert(parent,'end',iid=self.iid,text=str("Constraints"),values=("","ui_ConstraintGroup",str(self.iid)))
+        elif element == "DOMAINHOLDER":
+            self.treeview.insert(parent,'end',iid=self.iid,text=str("Domains"),values=("","ui_DomainGroup",str(self.iid)))
+        elif element == "USERHOLDER":
+            self.treeview.insert(parent,'end',iid=self.iid,text=str("Users"),values=("","ui_UserGroup",str(self.iid)))
+        
+        self.iid = self.iid + 1
+        self.id = self.id + 1
 
-        val = conditionManager.setDateRange(datetime(2019,1,9),datetime(2019,1,20))
-        self.insertDomain(True,"Date","09/10/20 -> 12/10/20",val)
+        return insertID
+
+
         
     def setDateRange(self,d1_d,d1_m,d1_y,d2_d,d2_m,d2_y):
         val = conditionManager.setDateRange(datetime(d1_y,d1_m,d1_d),datetime(d2_y,d2_m,d1_d))
-        self.insertDomain(True,"Date","%s/%s/%s -> %s/%s/%s" %(d1_d,d1_m,d1_y,d2_d,d2_m,d2_y) ,val)
+        #self.insertDomain(True,"Date","%s/%s/%s -> %s/%s/%s" %(d1_d,d1_m,d1_y,d2_d,d2_m,d2_y) ,val)
+        x = self.treeview.focus
+        self.treeInsert(conditionManager.conditionSet.variables[0],x)
            
 
 if __name__ == "__main__":
@@ -108,6 +145,8 @@ if __name__ == "__main__":
     c1 = conditionManager.getID()
     
     print(conditionManager.conditionSet)
+
+    
 
     app = Application(tk.Tk())
     app.root.mainloop()
