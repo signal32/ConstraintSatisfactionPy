@@ -6,6 +6,8 @@ from datetime import date, datetime
 
 import tkinter as tk
 import tkinter.ttk as ttk
+
+from forms import *
 # Setup conditions for event
 #https://www.askpython.com/python-modules/tkinter/tkinter-treeview-widget
 
@@ -22,7 +24,7 @@ class Application(tk.Frame):
         self.root.grid_columnconfigure(4, minsize=1)
 
         #Define UI widgets
-        self.setDatesButton = tk.Button(self.root,text="Add event date",command=self.openSetDates)
+        self.setDatesButton = tk.Button(self.root,text="Add event date",command=lambda: EnterDateRange(self.root,self.setDateRange))
         self.setDatesButton.grid(row=0,column=0,sticky='nsew')
 
         self.setUsersButton = tk.Button(self.root,text="Add required user")
@@ -83,18 +85,16 @@ class Application(tk.Frame):
         self.id = self.id + 1
 
     def openSetDates(self):
-        setDatesWindow = tk.Toplevel(self.root)
-        setDatesWindow.title("Set Dates")
-        setDatesWindow.geometry("200x200")
-        setDatesWindow.resizable(0,0)
-        setDatesWindow.grid_columnconfigure(4, minsize=1)
-        setDatesWindow.grid_rowconfigure(4, minsize=1)
-        tk.Label(setDatesWindow,text="Set dates").pack()
-        ttk.Combobox(setDatesWindow).pack()
+        #setDatesWindow = tk.Toplevel(self.root)
+        setDatesWindow = EnterDateRange(self.root,self.setDateRange)
 
         val = conditionManager.setDateRange(datetime(2019,1,9),datetime(2019,1,20))
         self.insertDomain(True,"Date","09/10/20 -> 12/10/20",val)
         
+    def setDateRange(self,d1_d,d1_m,d1_y,d2_d,d2_m,d2_y):
+        val = conditionManager.setDateRange(datetime(d1_y,d1_m,d1_d),datetime(d2_y,d2_m,d1_d))
+        self.insertDomain(True,"Date","%s/%s/%s -> %s/%s/%s" %(d1_d,d1_m,d1_y,d2_d,d2_m,d2_y) ,val)
+           
 
 if __name__ == "__main__":
     
