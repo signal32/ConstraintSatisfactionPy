@@ -28,7 +28,6 @@ class Solver():
             constraints.append(self.event.event.constraints[x])
             
         # Get reference to event variables
-        print(self.event.event.variables)
         for var in self.event.event.variables.keys():
             event_variables.append(self.event.event.variables[var])
 
@@ -49,40 +48,24 @@ class Solver():
             # For each constraint
             #TODO   1. Choose a value from each variables domain
 
-            print("CON: ", con)
             dom1, dom2 = con.scope
             dom1 = dom1.domain
             dom2 = dom2.domain
-
-            print("\n\n", dom1)
-            print(dom2)
 
             #TODO   2. Test if this selection of values satisfies the constraints.
             #       If all constraints are satisfied rank = 100, else rank is dependant on number of constraints satisfied and their priority level
             for v in dom1:
                 # Iterate over dom1 variables
-                print("\n\nv: ", v)
-                print("v.start: ", v.start)
 
                 for v2 in dom2:
                     # Iterate over dom2 variables
-                    print("v2: ", v2)
-                    print("v2.start: ", v2.start)
-
                     # Check if dom2 is within dom1
                     if v.start <= v2.start and v.end >= v2.end:
-                        print("\nMATCH: ", v, " & ", v2)
                         self.match(v2)
 
         # Print matches
         print("MATCHES: ", self.matches)
         print("Optimal Time: ", self.matchesMax())
-
-
-
-        #TODO   3. Repeat steps 1 & 2 until all permutations have been tested
-
-        # TODO, Make system work with more than one user?
 
         #TODO Optimise this solver by only checking permutations that are centered around the date variable
         #TODO Optimise this solver by checking for arc consistency first (AC-3) and removing non consistent values from domain
