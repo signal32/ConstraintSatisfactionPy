@@ -5,6 +5,7 @@ class Solver():
     def __init__(self, event: Event) -> None:
         self.event = event
         self.mainIndex = 0
+        self.matches = {}
         return
 
     def __repr__(self) -> str:
@@ -39,8 +40,8 @@ class Solver():
             for var in (self.event.users[x].variables.keys()):
                 user_variables.append(self.event.users[x].variables[var])
 
-        print("Solver Variable References: ", user_variables + event_variables)
-        print("Solver Constraints: ", constraints)
+        #print("Solver Variable References: ", user_variables + event_variables)
+        #print("Solver Constraints: ", constraints)
 
         """For each constraint
         We want to see which ones are true"""
@@ -48,13 +49,13 @@ class Solver():
             # For each constraint
             #TODO   1. Choose a value from each variables domain
 
-            print(con)
+            print("CON: ", con)
             dom1, dom2 = con.scope
             dom1 = dom1.domain
             dom2 = dom2.domain
 
-            #print("\n\n", dom1)
-            #print(dom2)
+            print("\n\n", dom1)
+            print(dom2)
 
             #TODO   2. Test if this selection of values satisfies the constraints.
             #       If all constraints are satisfied rank = 100, else rank is dependant on number of constraints satisfied and their priority level
@@ -70,7 +71,12 @@ class Solver():
 
                     # Check if dom2 is within dom1
                     if v.start <= v2.start and v.end >= v2.end:
-                        print("Match: ", v," & ", v2)
+                        print("\nMATCH: ", v, " & ", v2)
+                        self.match(v2)
+
+        # Print matches
+        print("MATCHES: ", self.matches)
+        print("Optimal Time: ", self.matchesMax())
 
 
 
@@ -83,3 +89,24 @@ class Solver():
 
 
         return
+
+    def match(self, time):
+        time = str(time)
+        # Check self.matches to see if the time has already been matched
+        if time in self.matches.keys():
+            # If it has then plus 1 to the corresponding dict value
+            self.matches[time] += 1
+        else:
+            # If not add it to dict with value 1
+            self.matches[time] = 1
+
+    def matchesMax(self):
+        """Return match with most occurrences"""
+        maximum = -1
+        maximum_time = None
+        for i in self.matches.keys():
+            if self.matches[i] > maximum:
+                maximum = self.matches[i]
+                maximum_time = i
+
+        return maximum_time
