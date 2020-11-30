@@ -16,4 +16,3 @@ class UnaryVariable(Variable):
         '''Replaces domain with new instance'''
         self.domain = domain
 
-    
