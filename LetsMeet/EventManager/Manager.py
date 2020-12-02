@@ -13,12 +13,13 @@ class Manager():
         return
     
     """To create an event manager class for an arbitrary event loaded from data model, use this method"""
+    """
     @classmethod
     def fromUUID(cls, uuid: object):
         #TODO get event with this UUID from storage model and initialise class
         event = Event()
         event.uuid = uuid
-        return cls(open(event,))
+        return cls(open(event,))"""
 
 
     def initBlank(self):
