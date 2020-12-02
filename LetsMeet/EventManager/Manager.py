@@ -8,7 +8,7 @@ class Manager():
     
     def __init__(self,event: Event = Event()) -> None:
         self.event = event
-        self.solver = Solver()
+        self.solver = Solver(event)
 
         return
     

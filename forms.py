@@ -39,11 +39,12 @@ class EnterDateRange(tk.Toplevel):
         self.d2_y = tk.Spinbox(self,from_=2000,to=2999)
         self.d2_y.grid(row=3,column=2)
 
-        self.confirmButton = tk.Button(self,text="Please",command=self._onConfirmButtonClick)
+        self.confirmButton = tk.Button(self,text="Add",command=self._onConfirmButtonClick)
         self.confirmButton.grid(row=4,column=1,sticky="nsew")
 
     def _onConfirmButtonClick(self):
         self.confirm_method(int(self.d1_d.get()),int(self.d1_m.get()),int(self.d1_y.get()),int(self.d2_d.get()),int(self.d2_m.get()),int(self.d2_y.get()))
+        self.destroy()
 
 class MyWindow(tk.Toplevel): #Create a window
     def __init__(self, master=None):

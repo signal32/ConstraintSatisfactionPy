@@ -4,7 +4,10 @@
 from .Manager import Manager
 from. import types
 from .ConditionSet import ConditionSet
-from ..ConditionManager import *
+
+# exposing extra classes for test purposes
+from .variable import Variable
+from .constraint import Constraint
 
 
 

@@ -1,4 +1,4 @@
-import uuid
+"""import uuid
 from typing import Dict
 from .ConditionSet import ConditionSet
 
@@ -35,3 +35,5 @@ class Event():
         '''Adds a user condition set and returns its index вы читать этот??'''
         self.users[userConditionSet.uuid] = userConditionSet
         return userConditionSet
+
+"""

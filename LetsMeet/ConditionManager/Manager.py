@@ -1,4 +1,4 @@
-from LetsMeet.ConditionManager.Event import Event
+#from LetsMeet.ConditionManager.Event import Event
 from datetime import datetime
 
 from .variable import Variable
