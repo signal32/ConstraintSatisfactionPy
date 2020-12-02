@@ -6,14 +6,16 @@ class Event():
 
     count = 0
 
-    def __init__(self,eventConditionSet: ConditionSet = None, userConditionSets: Dict[object,ConditionSet] = {}, name = "Event " + str(count)):
+    def __init__(self,eventConditionSet: ConditionSet = None, userConditionSets: Dict[object,ConditionSet] = {}, name = None):
         self.name = name
         self.uuid = uuid.uuid1()
         self.event = eventConditionSet
         self.eventMain = 0
         self.users = userConditionSets
         self.lut = False
-        #Event.count += 1 #TODO fix counter
+        if self.name == None:
+            self.event = "Event" + str(Event.count)
+        Event.count += 1 #TODO fix counter
         return
 
     def __str__(self):

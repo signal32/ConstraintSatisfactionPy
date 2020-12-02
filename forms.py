@@ -1,3 +1,4 @@
+from datetime import date
 import tkinter as tk
 import tkinter.ttk as ttk
 
@@ -48,3 +49,19 @@ class MyWindow(tk.Toplevel): #Create a window
     def __init__(self, master=None):
         tk.Toplevel.__init__(self, master)
         self.title("This is title Name")
+
+class DebugWindow(tk.Toplevel):
+    def __init__(self, root,text) -> None:
+        tk.Toplevel.__init__(self, root)
+        self.root = root
+        self.text = text
+        self.UI()
+
+    def UI(self):
+        self.geometry("410x300")
+        self.title("Debug")
+        self.grid_rowconfigure(4, minsize=1)
+        self.grid_columnconfigure(4, minsize=1)
+        self.title = tk.Text("Debug output", date.ctime())
+        self.text = tk.Text(self,self.text)
+

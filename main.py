@@ -10,14 +10,14 @@ import tkinter as tk
 import tkinter.ttk as ttk
 
 from forms import *
-# Setup conditions for event
-#https://www.askpython.com/python-modules/tkinter/tkinter-treeview-widget
+
 
 class Application(tk.Frame):
     def __init__(self, root) -> None:
         self.root = root
         self.UI()
         self.events = []
+        self.selection = {}
 
     # Initilaise UI
     def UI(self):
@@ -41,7 +41,7 @@ class Application(tk.Frame):
         self.idnumber_label.grid(row=0, column=1, sticky=tk.W)
         self.idnumber_entry.grid(row=0, column=2,sticky='nsew')
 
-        self.spewButton = tk.Button(self.root, text="Debug Selected", command=self.spew)
+        self.spewButton = tk.Button(self.root, text="Debug Selected", command=self.debug)
         self.spewButton.grid(row=1,column=4)
 
         # Set treeview
@@ -59,8 +59,8 @@ class Application(tk.Frame):
         self.tree.column('#2', stretch=tk.YES)        
         self.tree.column('#3', stretch=tk.YES)
 
-        self.eventFolder = self.tree.insert("",0,text="Event",values=(str(eventManager.event.name),"Collection",str(eventManager.event.uuid)))        
-        self.userFolder = self.tree.insert("",1,text="Users",values=("","Collection"))
+        #self.eventFolder = self.tree.insert("",0,text="Event",values=(str(eventManager.event.name),"Collection",str(eventManager.event.uuid)))        
+        #self.userFolder = self.tree.insert("",1,text="Users",values=("","Collection"))
 
         self.tree.grid(row=4, columnspan=9, sticky='nsew')
         self.treeview = self.tree
@@ -71,11 +71,35 @@ class Application(tk.Frame):
     def popupUser(self):
         self.popupUser
 
-    def spew(self):
+    def debug(self):
         print("______Selected_______")
-        print("ID: ",self.treeview.selection()[0])
-        print("Contents: ",self.treeview.item(self.treeview.focus()))
+        print("ID: ",self.getCurrentValues())
+        print("Contents: ",self.getCurrentTreeID())
+        print("Children: ", self.treeview.get_children(self.getCurrentTreeID()))
+        print("_______Global________")
+        print("Events: ", self.events)
+
+    def getCurrentTreeID(self):
+        try:
+            return self.treeview.selection()[0]
+        except:
+            raise Exception("ERR: No selection found")
+
         
+    def getCurrentValues(self):
+        try:
+            return self.treeview.item(self.treeview.focus())['values']
+        except:
+            raise Exception("ERR: No selection found")
+ 
+
+    """returns the event object with specified UUID"""
+    def getEvent(self,uuid)-> lm.EventManager.Event:
+        for event in self.events:
+            if str(event.uuid) == uuid:
+                return event
+
+        raise Exception("ERR: Event not found") 
 
     def insert_data(self):
         self.treeview.insert('', 'end', iid=self.iid, text="Item_" + str(self.id),
@@ -111,7 +135,7 @@ class Application(tk.Frame):
         if isinstance(element,lm.EventManager.Event):
             self.treeview.insert('','end',iid=self.iid,text=str(element.name),values=("","Event",str(element.uuid)))
         elif isinstance(element,variable.Variable):
-            pass
+            self.treeview.insert(parent,'end',iid=self.iid,text=str(element.name),values=(str(element.domain),"Variable",str(element.uuid)))
         elif element == "CONSTRAINTHOLDER":
             self.treeview.insert(parent,'end',iid=self.iid,text=str("Constraints"),values=("","ui_ConstraintGroup",str(self.iid)))
         elif element == "DOMAINHOLDER":
@@ -123,15 +147,19 @@ class Application(tk.Frame):
         self.id = self.id + 1
 
         return insertID
-
-
-        
+    
+    # Sets date range on selected event
     def setDateRange(self,d1_d,d1_m,d1_y,d2_d,d2_m,d2_y):
-        val = conditionManager.setDateRange(datetime(d1_y,d1_m,d1_d),datetime(d2_y,d2_m,d1_d))
-        #self.insertDomain(True,"Date","%s/%s/%s -> %s/%s/%s" %(d1_d,d1_m,d1_y,d2_d,d2_m,d2_y) ,val)
-        x = self.treeview.focus
-        self.treeInsert(conditionManager.conditionSet.variables[0],x)
+        man = lm.ConditionManager.Manager()
+        man.event = self.getEvent(self.getCurrentValues()[2])
+        val = man.setDateRange(datetime(d1_y,d1_m,d1_d),datetime(d2_y,d2_m,d1_d))
+        self.treeInsert(val,self.treeview.get_children(self.getCurrentTreeID())[0])
            
+    def addUserdateRange(self,d1_d,d1_m,d1_y,d2_d,d2_m,d2_y):
+        event = self.getEvent(self.getCurrentValues()[2])
+        cond = lm.ConditionManager.ConditionSet()
+        #cond.addVariable(lm.ConditionManager)
+
 
 if __name__ == "__main__":
     

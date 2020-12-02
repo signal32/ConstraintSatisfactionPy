@@ -3,3 +3,4 @@
 from .Manager import Manager
 from .Event import Event
 #from .solver import Solver
+from ..EventManager import *

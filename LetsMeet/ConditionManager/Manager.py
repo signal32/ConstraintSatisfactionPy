@@ -43,7 +43,7 @@ class Manager():
     def setDateRange(self, startDate: datetime, endDate: datetime):
         val = self.conditionSet.addVariable(Variable(DateRange(startDate,endDate,30)))
         self._bindToEvent()
-        return val.uuid
+        return val
 
     def _bindToEvent(self):
         self.event.addUserConditionSet(self.conditionSet) #This is a bodge to get around lack of pointers in python, proper code below
