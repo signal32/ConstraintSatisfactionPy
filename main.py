@@ -22,6 +22,8 @@ class Application(tk.Frame):
         self.events = []
         self.selection = {}
 
+        self.root.iconphoto(True, tk.PhotoImage(file='icon.png'))
+
     # Devines UI layout and configuration
     def UI(self):
         #Configure application root
