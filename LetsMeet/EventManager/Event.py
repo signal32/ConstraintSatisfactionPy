@@ -1,19 +1,22 @@
 import uuid
 from typing import Dict
-from .ConditionSet import ConditionSet
+from LetsMeet.ConditionManager.ConditionSet import ConditionSet
 
 class Event():
 
     count = 0
-
-    def __init__(self,eventConditionSet: ConditionSet = None, userConditionSets: Dict[object,ConditionSet] = {}, name = "Event " + str(count)):
+    
+    def __init__(self,eventConditionSet: ConditionSet = None, userConditionSets: Dict[object,ConditionSet] = {}, name = "Event0"):
         self.name = name
         self.uuid = uuid.uuid1()
         self.event = eventConditionSet
         self.eventMain = 0
         self.users = userConditionSets
         self.lut = False
-        #Event.count += 1 #TODO fix counter
+        if self.name == "Event":
+            self.event = "Eventt" + str(Event.count)
+        Event.count += 1 #TODO fix counter
+        print("hey")
         return
 
     def __str__(self):

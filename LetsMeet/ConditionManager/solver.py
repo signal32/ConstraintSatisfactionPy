@@ -1,4 +1,4 @@
-
+"""
 from lm_constraint_satisfaction.variable import Variable
 
 
@@ -47,4 +47,4 @@ class Solver:
                         print("Err: No solution exists")
         print("Made Arc Consistent")
 
-
+"""

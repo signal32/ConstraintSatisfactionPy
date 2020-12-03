@@ -1,0 +1,85 @@
+eventConditionSet = lm.ConditionSet()
+dateVariable = eventConditionSet.addVariable(lm.Variable([
+    lm.types.DateRange(datetime.datetime(1999,1,9,12),datetime.datetime(1999,1,9,14)),
+    lm.types.DateRange(datetime.datetime(1999,1,9,17),datetime.datetime(1999,1,9,20))]))
+participantCount = eventConditionSet.addVariable(lm.UnaryVariable(0))
+
+# Use those conditions to initialise event
+event = lm.Event(eventConditionSet)
+
+# Set up participant
+participant1 = event.addUserConditionSet(lm.ConditionSet())
+event.users[participant1.uuid].name += " (participant 1)"
+userDate = event.users[participant1.uuid].addVariable(lm.Variable([lm.types.DateRange(datetime.datetime(1989,1,9,12),datetime.datetime(1989,1,9,14))]))
+event.users[participant1.uuid].addConstraint(lm.Constraint((dateVariable.uuid,userDate.uuid),"="))
+
+#event.printFull()
+
+solver = lm.solver.Solver(event)
+solver.solve()  
+
+
+
+
+
+__________________________________________________
+#import lm_Conditions as lmcs
+import LetsMeet as lm
+from datetime import date, datetime
+
+import sys
+
+#from tkinter import *
+#from tkinter.ttk import * 
+import tkinter as tk
+import tkinter.ttk as ttk
+# Setup conditions for event
+
+def buttonpress():
+    print("chow")
+
+def main():
+    win = tk.Tk()
+    win.title("Let's Meet Demo") 
+    win.geometry("600x800") 
+
+    tk.Button(win, text="AddEventCondition",command=buttonpress)
+
+    tree = ttk.Treeview(win)
+    tree["columns"]=("one","two")
+    tree.column("#0", width=150, minwidth=100, stretch=tk.NO)
+    tree.column("one", width=300, minwidth=150)
+    tree.column("two", width=150, minwidth=200, stretch=tk.NO)
+
+    tree.heading("#0",text="Name",anchor=tk.W)
+    tree.heading("one", text="Value",anchor=tk.W)
+    tree.heading("two", text="Type",anchor=tk.W)
+
+    # Level 1
+    #tree.insert("", 2, "", text="text_file.txt", values=("23-Jun-17 11:25","TXT file","1 KB"))
+
+
+    eventFolder = tree.insert("",0,text="Event",values=("","Collection"))
+    userFolder = tree.insert("",1,text="Users",values=("","Collection"))
+
+    tree.pack(side=tk.TOP,fill=tk.X)
+
+    win.mainloop()
+
+
+
+
+if __name__ == "__main__":
+    
+    # Get ourselves a manager
+    eventManager = lm.EventManager.Manager()
+    eventManager.initBlank()
+
+    # get an condition manager
+    conditionManager = lm.ConditionManager.Manager()
+    conditionManager.event = eventManager.event # This is a bodge to get around lack of pointers in python
+    c1 = conditionManager.getID()
+    conditionManager.setDateRange(datetime(2019,1,9),datetime(2019,1,20))
+    print(conditionManager.conditionSet)
+
+    main()
