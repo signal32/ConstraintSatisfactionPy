@@ -16,7 +16,6 @@ class Event():
         if self.name == "Event":
             self.event = "Eventt" + str(Event.count)
         Event.count += 1 #TODO fix counter
-        print("hey")
         return
 
     def __str__(self):

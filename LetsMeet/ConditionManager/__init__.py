@@ -8,6 +8,7 @@ from .ConditionSet import ConditionSet
 # exposing extra classes for test purposes
 from .variable import Variable
 from .constraint import Constraint
+from .UnaryVariable import UnaryVariable
 
 
 

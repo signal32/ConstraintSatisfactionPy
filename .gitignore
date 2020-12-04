@@ -2,3 +2,8 @@ __pycache__/
 tkcalendar/
 .pyc
 misc.txt
+*.xml
+*.pyc
+LetsMeet/ConditionManager/__pycache__/ConditionSet.cpython-38.pyc
+LetsMeet/ConditionManager/__pycache__/constraint.cpython-38.pyc
+*.iml
