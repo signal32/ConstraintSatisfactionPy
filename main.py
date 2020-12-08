@@ -183,13 +183,15 @@ class Application(tk.Frame):
             self.treeview.insert('','end',iid=self.iid,text=str(element.name),values=("","Event",str(element.uuid)))
         elif isinstance(element,variable.Variable):
             self.treeview.insert(parent,'end',iid=self.iid,text=str(element.name),values=(str(element.domain),"Variable",str(element.uuid)))
+        elif isinstance(element,lm.ConditionManager.Constraint):
+            self.treeview.insert(parent,'end',iid=self.iid,text=str(element.name),values=(str(element.scope),"Variable",str(element.uuid)))
         elif isinstance(element,lm.ConditionManager.ConditionSet):
             id=self.treeview.insert(parent,'end',iid=self.iid,text=str(element.name),values=("","ConditionSet",str(element.uuid)))
             print("id:",id)
             for x in element.variables:
-                self.treeInsert(element.variables,id) 
+                self.treeInsert(element.variables[x],id) 
             for x in element.constraints:
-                self.treeInsert(element.constraints,id) 
+                self.treeInsert(element.constraints[x],id) 
             pass
         elif element == "CONSTRAINTHOLDER":
             self.treeview.insert(parent,'end',iid=self.iid,text=str("Constraints"),values=("","ui_ConstraintGroup",str(self.iid)))
@@ -199,6 +201,7 @@ class Application(tk.Frame):
             self.treeview.insert(parent,'end',iid=self.iid,text=str("Users"),values=("","ui_UserGroup",str(self.iid)))
         else:
             print(parent)
+            print(element)
             self.treeview.insert(parent,'end',iid=self.iid,text=str("UNDEFINED"),values=(str(element),"UNDEFINED",str(self.iid)))
         return insertID
     
