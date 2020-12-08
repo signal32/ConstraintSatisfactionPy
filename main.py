@@ -21,6 +21,7 @@ class Application(tk.Frame):
         self.UI()
         self.events = []
         self.selection = {}
+        self.eastereggCount = 0
 
         self.root.iconphoto(True, tk.PhotoImage(file='icon.png'))
 
@@ -145,6 +146,8 @@ class Application(tk.Frame):
 
     # Creates a new event and stores it in global event array
     def addEvent(self):
+        if self.eastereggCount >3:
+            box = messagebox.askyesnocancel("Based on your estimated age...","Would you like to hire a bouncy castle?")
         event = lm.EventManager.Manager()
         event.initBlank()
         if(len(self.idnumber_entry.get())>1):
@@ -155,6 +158,7 @@ class Application(tk.Frame):
         self.treeInsert("CONSTRAINTHOLDER",root)
         self.treeInsert("USERHOLDER",root)
         self.idnumber_entry.delete(0,'end')
+        self.eastereggCount += 1
 
     # Depreciated - use setdaterange()
     def insertDomain(self,event:bool, name, value, id, ):
@@ -166,7 +170,7 @@ class Application(tk.Frame):
         self.iid = self.iid + 1
         self.id = self.id + 1
 
-    """Put's the given element into the treeview below parent (if specified)"""
+    # Put's the given element into the treeview below parent (if specified)
     def treeInsert(self,element,parent = None):
         #current = self.treeview.item(self.treeview.focus())
         #item = self.treeview.selection()[0]
@@ -236,7 +240,7 @@ class Application(tk.Frame):
             warning = messagebox.showerror("Error",exception_type + "\nEvent must have valid date")
             print(exception_type)
 
-    """Will solve the currently selected event"""
+    #Will solve the currently selected event
     def solveEvent(self):
         try:
             event  = self.getEvent(self.getCurrentValues()[2])
