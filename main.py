@@ -148,6 +148,7 @@ class Application(tk.Frame):
     def addEvent(self):
         if self.eastereggCount >3:
             box = messagebox.askyesnocancel("Based on your estimated age...","Would you like to hire a bouncy castle?")
+            self.eastereggCount = -5
         event = lm.EventManager.Manager()
         event.initBlank()
         if(len(self.idnumber_entry.get())>1):
@@ -202,11 +203,11 @@ class Application(tk.Frame):
         return insertID
     
     # Sets date range on selected event
-    def setDateRange(self,d1_d,d1_m,d1_y,d2_d,d2_m,d2_y):
+    def setDateRange(self,d1_d,d1_m,d1_y,d1_thh,d1_tmm,d2_d,d2_m,d2_y,d2_thh,d2_tmm):
         try:
             event = self.getEvent(self.getCurrentValues()[2])
             #variable = lm.ConditionManager.Variable((datetime(d1_y,d1_m,d1_d),datetime(d2_y,d2_m,d1_d)))
-            variable = lm.ConditionManager.Variable([lm.ConditionManager.types.DateRange(datetime(d1_y,d1_m,d1_d),datetime(d2_y,d2_m,d1_d))])
+            variable = lm.ConditionManager.Variable([lm.ConditionManager.types.DateRange(datetime(d1_y,d1_m,d1_d,d1_thh,d1_tmm),datetime(d2_y,d2_m,d2_d,d2_thh,d2_tmm))])
             event.eventMain = variable.uuid
             event.event.addVariable(variable)
             self.treeInsert(variable,self.treeview.get_children(self.getCurrentTreeID())[0])
@@ -216,7 +217,7 @@ class Application(tk.Frame):
             print(exception_type)
 
     """Creates conditionSet for user which specifies their avaliability"""      
-    def addUserdateRange(self,d1_d,d1_m,d1_y,d2_d,d2_m,d2_y):
+    def addUserdateRange(self,d1_d,d1_m,d1_y,d1_thh,d1_tmm,d2_d,d2_m,d2_y,d2_thh,d2_tmm):
         try:
             #Create the data structure
             event = self.getEvent(self.getCurrentValues()[2])
@@ -230,7 +231,7 @@ class Application(tk.Frame):
         try:
             participant2 = event.addUserConditionSet(lm.ConditionManager.ConditionSet())
             event.users[participant2.uuid].name = " (participant" + str(len(event.users)) +")"
-            userDate2 = event.users[participant2.uuid].addVariable(lm.ConditionManager.Variable([lm.ConditionManager.types.DateRange(datetime(d1_y,d1_m,d1_d),datetime(d2_y,d2_m,d1_d))]))
+            userDate2 = event.users[participant2.uuid].addVariable(lm.ConditionManager.Variable([lm.ConditionManager.types.DateRange(datetime(d1_y,d1_m,d1_d,d1_thh,d1_tmm),datetime(d2_y,d2_m,d2_d,d2_thh,d2_tmm))]))
             event.users[participant2.uuid].addConstraint(lm.ConditionManager.Constraint((event.event.variables[event.eventMain], userDate2), "="))
 
             #Populate the UI

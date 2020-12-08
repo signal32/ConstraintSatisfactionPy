@@ -12,7 +12,7 @@ class EnterDateRange(tk.Toplevel):
     def UI(self):
         self.geometry("410x110")
         self.title("Enter Dates")
-        self.grid_rowconfigure(4, minsize=1)
+        self.grid_rowconfigure(5, minsize=1)
         self.grid_columnconfigure(4, minsize=1)
 
         self.d1_label = tk.Label(self,text="Start date (DD/MM/YYY:")
@@ -27,6 +27,18 @@ class EnterDateRange(tk.Toplevel):
         self.d1_y = tk.Spinbox(self,from_=2000,to=2999)
         self.d1_y.grid(row=1,column=2)
 
+        self.d1_label2 = tk.Label(self,text="Start time (HH:MM):")
+        self.d1_label2.grid(row=0,column=3)
+
+        self.d1_thh = tk.Spinbox(self,from_=00,to=24)
+        self.d1_thh.grid(row=1,column=3)
+
+        self.d1_label = tk.Label(self,text=":")
+        self.d1_label.grid(row=1,column=4)
+
+        self.d1_tmm = tk.Spinbox(self,from_=00,to=59)
+        self.d1_tmm.grid(row=1,column=6)
+
         self.d2_label = tk.Label(self,text="End date (DD/MM/YYY:")
         self.d2_label.grid(row=2,column=0)
 
@@ -39,11 +51,25 @@ class EnterDateRange(tk.Toplevel):
         self.d2_y = tk.Spinbox(self,from_=2000,to=2999)
         self.d2_y.grid(row=3,column=2)
 
+        self.d2_label2 = tk.Label(self,text="Start time (HH:MM):")
+        self.d2_label2.grid(row=2,column=3)
+
+        self.d2_thh = tk.Spinbox(self,from_=00,to=24)
+        self.d2_thh.grid(row=3,column=3)
+
+        self.d2_label = tk.Label(self,text=":")
+        self.d2_label.grid(row=3,column=4)
+
+        self.d2_tmm = tk.Spinbox(self,from_=00,to=59)
+        self.d2_tmm.grid(row=3,column=6)
+
         self.confirmButton = tk.Button(self,text="Add",command=self._onConfirmButtonClick)
         self.confirmButton.grid(row=4,column=1,sticky="nsew")
 
     def _onConfirmButtonClick(self):
-        self.confirm_method(int(self.d1_d.get()),int(self.d1_m.get()),int(self.d1_y.get()),int(self.d2_d.get()),int(self.d2_m.get()),int(self.d2_y.get()))
+        self.confirm_method(
+            int(self.d1_d.get()),int(self.d1_m.get()),int(self.d1_y.get()),int(self.d1_thh.get()),int(self.d1_tmm.get()),
+            int(self.d2_d.get()),int(self.d2_m.get()),int(self.d2_y.get()),int(self.d2_thh.get()),int(self.d2_tmm.get()))
         self.destroy()
 
 class MyWindow(tk.Toplevel): #Create a window
