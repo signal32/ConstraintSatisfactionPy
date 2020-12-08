@@ -10,7 +10,7 @@ class EnterDateRange(tk.Toplevel):
         self.confirm_method = confirm_method
 
     def UI(self):
-        self.geometry("410x110")
+        self.geometry("685x110")
         self.title("Enter Dates")
         self.grid_rowconfigure(5, minsize=1)
         self.grid_columnconfigure(4, minsize=1)

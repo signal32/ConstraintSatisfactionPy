@@ -136,6 +136,15 @@ class Application(tk.Frame):
                 return event
         raise Exception("ERR: Event not found") 
     
+    def getConditionSet(self,uuid):
+        for event in self.events:
+            for set in event.users:
+                if str(event.users[set].uuid == uuid):
+                    return event.users[set]
+            if str(event.uuid) == uuid:
+                return event
+        raise Exception("ERR: Event not found") 
+
     # Depreciated, use treeInsert()
     def insert_data(self):
         self.treeview.insert('', 'end', iid=self.iid, text="Item_" + str(self.id),
@@ -227,9 +236,13 @@ class Application(tk.Frame):
 
         except Exception as err:
             exception_type = type(err).__name__
-            warning = messagebox.showerror("Error",exception_type + "\nAn event must be selected.")
-            print(exception_type)
-            return
+            try:
+                event = self.getConditionSet(self.getCurrentValues()[2])
+            except Exception as err:
+                exception_type = type(err).__name__
+                warning = messagebox.showerror("Error",exception_type + "\nAn event must be selected.")
+                print(exception_type)
+                return
         
         try:
             participant2 = event.addUserConditionSet(lm.ConditionManager.ConditionSet())
@@ -240,9 +253,15 @@ class Application(tk.Frame):
             #Populate the UI
             self.treeInsert(participant2,self.treeview.get_children(self.getCurrentTreeID())[2])
         except Exception as err:
-            exception_type = type(err).__name__
-            warning = messagebox.showerror("Error",exception_type + "\nEvent must have valid date")
-            print(exception_type)
+            try:
+                userDate2 = event.addVariable(lm.ConditionManager.Variable([lm.ConditionManager.types.DateRange(datetime(d1_y,d1_m,d1_d,d1_thh,d1_tmm),datetime(d2_y,d2_m,d2_d,d2_thh,d2_tmm))]))
+                #con = event.addConstraint(lm.ConditionManager.Constraint((event.event.variables[event.eventMain], userDate2), "="))
+                self.treeInsert(userDate2,self.getCurrentTreeID())
+                #self.treeInsert(con,self.treeview.get_children(self.getCurrentTreeID())[0])
+            except Exception as err:
+                exception_type = type(err).__name__
+                warning = messagebox.showerror("Error",exception_type + "\nEvent must have valid date")
+                print(exception_type)
 
     #Will solve the currently selected event
     def solveEvent(self):
