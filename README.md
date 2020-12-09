@@ -21,5 +21,5 @@ Once all the time ranges have been inserted, the ‘Run Solver’ button can be 
 Solver.py is where the algorithm compares time ranges and checks if they lie within the possible event time ranges. The time ranges that are within in the possible event ranges are added to a dictionary, at the end of comparison the dictionary is checked for the entry with the most occurrences.
 
 ## Screenshots
-![Benjamin Bannekat](images/screenshot01.png)
+![Benjamin Bannekat](Images/screenshot01.png)
 Shown is the events overview window(top) and date entry dialog (below).
