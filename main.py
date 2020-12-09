@@ -21,6 +21,7 @@ class Application(tk.Frame):
         self.UI()
         self.events = []
         self.selection = {}
+        self.eastereggCount = 0
 
         self.root.iconphoto(True, tk.PhotoImage(file='icon.png'))
 
@@ -135,6 +136,15 @@ class Application(tk.Frame):
                 return event
         raise Exception("ERR: Event not found") 
     
+    def getConditionSet(self,uuid):
+        for event in self.events:
+            for set in event.users:
+                if str(event.users[set].uuid == uuid):
+                    return event.users[set]
+            if str(event.uuid) == uuid:
+                return event
+        raise Exception("ERR: Event not found") 
+
     # Depreciated, use treeInsert()
     def insert_data(self):
         self.treeview.insert('', 'end', iid=self.iid, text="Item_" + str(self.id),
@@ -145,6 +155,9 @@ class Application(tk.Frame):
 
     # Creates a new event and stores it in global event array
     def addEvent(self):
+        if self.eastereggCount >3:
+            box = messagebox.askyesnocancel("Based on your estimated age...","Would you like to hire a bouncy castle?")
+            self.eastereggCount = -5
         event = lm.EventManager.Manager()
         event.initBlank()
         if(len(self.idnumber_entry.get())>1):
@@ -155,6 +168,7 @@ class Application(tk.Frame):
         self.treeInsert("CONSTRAINTHOLDER",root)
         self.treeInsert("USERHOLDER",root)
         self.idnumber_entry.delete(0,'end')
+        self.eastereggCount += 1
 
     # Depreciated - use setdaterange()
     def insertDomain(self,event:bool, name, value, id, ):
@@ -166,7 +180,7 @@ class Application(tk.Frame):
         self.iid = self.iid + 1
         self.id = self.id + 1
 
-    """Put's the given element into the treeview below parent (if specified)"""
+    # Put's the given element into the treeview below parent (if specified)
     def treeInsert(self,element,parent = None):
         #current = self.treeview.item(self.treeview.focus())
         #item = self.treeview.selection()[0]
@@ -178,13 +192,15 @@ class Application(tk.Frame):
             self.treeview.insert('','end',iid=self.iid,text=str(element.name),values=("","Event",str(element.uuid)))
         elif isinstance(element,variable.Variable):
             self.treeview.insert(parent,'end',iid=self.iid,text=str(element.name),values=(str(element.domain),"Variable",str(element.uuid)))
+        elif isinstance(element,lm.ConditionManager.Constraint):
+            self.treeview.insert(parent,'end',iid=self.iid,text=str(element.name),values=(str(element.scope),"Variable",str(element.uuid)))
         elif isinstance(element,lm.ConditionManager.ConditionSet):
             id=self.treeview.insert(parent,'end',iid=self.iid,text=str(element.name),values=("","ConditionSet",str(element.uuid)))
             print("id:",id)
             for x in element.variables:
-                self.treeInsert(element.variables,id) 
+                self.treeInsert(element.variables[x],id) 
             for x in element.constraints:
-                self.treeInsert(element.constraints,id) 
+                self.treeInsert(element.constraints[x],id) 
             pass
         elif element == "CONSTRAINTHOLDER":
             self.treeview.insert(parent,'end',iid=self.iid,text=str("Constraints"),values=("","ui_ConstraintGroup",str(self.iid)))
@@ -194,15 +210,16 @@ class Application(tk.Frame):
             self.treeview.insert(parent,'end',iid=self.iid,text=str("Users"),values=("","ui_UserGroup",str(self.iid)))
         else:
             print(parent)
+            print(element)
             self.treeview.insert(parent,'end',iid=self.iid,text=str("UNDEFINED"),values=(str(element),"UNDEFINED",str(self.iid)))
         return insertID
     
     # Sets date range on selected event
-    def setDateRange(self,d1_d,d1_m,d1_y,d2_d,d2_m,d2_y):
+    def setDateRange(self,d1_d,d1_m,d1_y,d1_thh,d1_tmm,d2_d,d2_m,d2_y,d2_thh,d2_tmm):
         try:
             event = self.getEvent(self.getCurrentValues()[2])
             #variable = lm.ConditionManager.Variable((datetime(d1_y,d1_m,d1_d),datetime(d2_y,d2_m,d1_d)))
-            variable = lm.ConditionManager.Variable([lm.ConditionManager.types.DateRange(datetime(d1_y,d1_m,d1_d),datetime(d2_y,d2_m,d1_d))])
+            variable = lm.ConditionManager.Variable([lm.ConditionManager.types.DateRange(datetime(d1_y,d1_m,d1_d,d1_thh,d1_tmm),datetime(d2_y,d2_m,d2_d,d2_thh,d2_tmm))])
             event.eventMain = variable.uuid
             event.event.addVariable(variable)
             self.treeInsert(variable,self.treeview.get_children(self.getCurrentTreeID())[0])
@@ -212,31 +229,41 @@ class Application(tk.Frame):
             print(exception_type)
 
     """Creates conditionSet for user which specifies their avaliability"""      
-    def addUserdateRange(self,d1_d,d1_m,d1_y,d2_d,d2_m,d2_y):
+    def addUserdateRange(self,d1_d,d1_m,d1_y,d1_thh,d1_tmm,d2_d,d2_m,d2_y,d2_thh,d2_tmm):
         try:
             #Create the data structure
             event = self.getEvent(self.getCurrentValues()[2])
 
         except Exception as err:
             exception_type = type(err).__name__
-            warning = messagebox.showerror("Error",exception_type + "\nAn event must be selected.")
-            print(exception_type)
-            return
+            try:
+                event = self.getConditionSet(self.getCurrentValues()[2])
+            except Exception as err:
+                exception_type = type(err).__name__
+                warning = messagebox.showerror("Error",exception_type + "\nAn event must be selected.")
+                print(exception_type)
+                return
         
         try:
             participant2 = event.addUserConditionSet(lm.ConditionManager.ConditionSet())
             event.users[participant2.uuid].name = " (participant" + str(len(event.users)) +")"
-            userDate2 = event.users[participant2.uuid].addVariable(lm.ConditionManager.Variable([lm.ConditionManager.types.DateRange(datetime(d1_y,d1_m,d1_d),datetime(d2_y,d2_m,d1_d))]))
+            userDate2 = event.users[participant2.uuid].addVariable(lm.ConditionManager.Variable([lm.ConditionManager.types.DateRange(datetime(d1_y,d1_m,d1_d,d1_thh,d1_tmm),datetime(d2_y,d2_m,d2_d,d2_thh,d2_tmm))]))
             event.users[participant2.uuid].addConstraint(lm.ConditionManager.Constraint((event.event.variables[event.eventMain], userDate2), "="))
 
             #Populate the UI
             self.treeInsert(participant2,self.treeview.get_children(self.getCurrentTreeID())[2])
         except Exception as err:
-            exception_type = type(err).__name__
-            warning = messagebox.showerror("Error",exception_type + "\nEvent must have valid date")
-            print(exception_type)
+            try:
+                userDate2 = event.addVariable(lm.ConditionManager.Variable([lm.ConditionManager.types.DateRange(datetime(d1_y,d1_m,d1_d,d1_thh,d1_tmm),datetime(d2_y,d2_m,d2_d,d2_thh,d2_tmm))]))
+                #con = event.addConstraint(lm.ConditionManager.Constraint((event.event.variables[event.eventMain], userDate2), "="))
+                self.treeInsert(userDate2,self.getCurrentTreeID())
+                #self.treeInsert(con,self.treeview.get_children(self.getCurrentTreeID())[0])
+            except Exception as err:
+                exception_type = type(err).__name__
+                warning = messagebox.showerror("Error",exception_type + "\nEvent must have valid date")
+                print(exception_type)
 
-    """Will solve the currently selected event"""
+    #Will solve the currently selected event
     def solveEvent(self):
         try:
             event  = self.getEvent(self.getCurrentValues()[2])
